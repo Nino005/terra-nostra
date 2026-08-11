@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terra Nostra · Area dipendenti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#1d3027;--cream:#f6efe3;--paper:#fcfaf5;--terra:#a85d45;--gold:#c39a59;--ink:#252923;--muted:#74746c;--line:#2529231c}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Arial,sans-serif}
+.wrap{width:min(calc(100% - 30px),1250px);margin:35px auto}.card{background:#fff;padding:28px;border-radius:20px;box-shadow:0 18px 50px #00000010;margin-top:18px}
+.login{max-width:440px;margin:10vh auto}.field{display:flex;flex-direction:column;gap:6px;margin:13px 0}.field label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted)}
+input,select,textarea{font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;width:100%}
+textarea{min-height:80px;resize:vertical}.btn{border:0;border-radius:999px;padding:11px 17px;background:var(--green);color:#fff;font-weight:700;cursor:pointer}.btn:disabled{opacity:.55;cursor:not-allowed}.red{background:var(--terra)}
+.hidden{display:none}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.ey{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700}h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif}h1{font-size:55px;line-height:.9;margin:8px 0}h2{font-size:42px;margin:5px 0 15px}.msg{margin-top:10px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.full{grid-column:1/-1}.table{margin-top:18px;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:980px}th,td{text-align:left;padding:11px;border-bottom:1px solid #eee;font-size:12px}th{font-size:10px;text-transform:uppercase;color:#777}
+.badge{padding:5px 8px;border-radius:999px;background:#eee;font-size:10px}.confirmed{background:#e3f3e8;color:#1f673d}.cancelled{background:#f8e4e4;color:#8a2d2d}.pending{background:#fff2cf;color:#7b5d15}
+.toolbar,.actions{display:flex;gap:8px;flex-wrap:wrap}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}
+.stat{padding:16px;border-radius:14px;background:var(--cream)}.stat strong{display:block;font:600 35px "Cormorant Garamond",Georgia,serif}
+.notice{padding:12px;border-radius:10px;background:#fff7df;font-size:11px;margin-bottom:15px}.ok{color:#20613b}.err{color:#8a2e2e}
+.order-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}.menu-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.menu-item{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;cursor:pointer;transition:.2s}.menu-item:hover{transform:translateY(-2px);box-shadow:0 10px 25px #0000000b}
+.menu-item strong{display:block}.menu-item small{color:var(--muted)}.order-line{display:grid;grid-template-columns:1fr 80px auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}
+.order-total{font-size:13px;margin:15px 0}.grand-total{display:flex;justify-content:space-between;align-items:center;padding:16px 0;margin:8px 0 15px;border-top:2px solid var(--green);font-size:20px}.grand-total strong{font:700 32px "Cormorant Garamond",Georgia,serif}.menu-price{margin-top:7px;font-weight:700;font-size:17px;color:var(--green)}.line-meta{display:block;color:var(--muted);font-size:10px;margin-top:3px}.pill{display:inline-block;padding:5px 9px;background:var(--cream);border-radius:999px;font-size:11px}
+@media(max-width:800px){.grid,.stats,.order-layout,.menu-list{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loginCard" class="card login">
+    <div class="ey">Terra Nostra</div><h1>Area dipendenti</h1>
+    <p>Inserisci il PIN del personale per gestire prenotazioni e ordinazioni.</p>
+    <div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="20"></div>
+    <button class="btn" id="login">Accedi</button><div id="msg" class="msg"></div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="top">
+      <div><div class="ey">Gestione sala</div><h1>Prenotazioni & Ordinazioni</h1><p id="count"></p></div>
+      <div class="toolbar"><button class="btn" id="refresh">Aggiorna</button><button class="btn red" id="logout">Esci</button></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span>Da confermare</span><strong id="pendingCount">0</strong></div>
+      <div class="stat"><span>Confermate</span><strong id="confirmedCount">0</strong></div>
+      <div class="stat"><span>Oggi</span><strong id="todayCount">0</strong></div>
+      <div class="stat"><span>Ordinazioni aperte</span><strong id="openOrdersCount">0</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="ey">Prenotazione telefonica</div><h2>Aggiungi una prenotazione</h2>
+      <div class="notice">Le prenotazioni inserite qui finiscono nello stesso Google Sheet delle prenotazioni online.</div>
+      <form id="staffForm">
+        <div class="grid">
+          <div class="field"><label>Nome e cognome *</label><input id="sName" required maxlength="100"></div>
+          <div class="field"><label>Telefono *</label><input id="sPhone" required maxlength="25"></div>
+          <div class="field"><label>Data *</label><input id="sDate" type="date" required></div>
+          <div class="field"><label>Orario *</label><select id="sTime" required></select></div>
+          <div class="field"><label>Persone *</label><input id="sPeople" type="number" min="1" max="100" value="2" required></div>
+          <div class="field"><label>Note</label><input id="sNotes" maxlength="500"></div>
+        </div>
+        <button class="btn" id="addBtn" type="submit">Salva prenotazione telefonica</button>
+        <div id="staffStatus" class="msg"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="ey">Ordinazioni</div><h2>Nuova ordinazione</h2>
+      <div class="notice">Seleziona uno dei tavoli reali del locale, aggiungi i piatti, modifica le quantità e inserisci eventuali note. L'ordine viene salvato nel foglio <b>Ordinazioni</b>.</div>
+      <div class="order-layout">
+        <div>
+          <div class="grid">
+            <div class="field"><label>Tavolo *</label><select id="orderTable" required></select></div>
+            <div class="field"><label>Codice prenotazione (facoltativo)</label><input id="orderBookingCode" maxlength="30" placeholder="TN-..."></div>
+          </div>
+          <div class="field"><label>Cerca piatto</label><input id="menuSearch" placeholder="Es. ravioloni, pizza..."></div>
+          <div id="menuList" class="menu-list"></div>
+        </div>
+        <div>
+          <div class="pill">Ordine corrente</div>
+          <div id="cart"></div>
+          <div class="field"><label>Note generali ordine</label><textarea id="orderNotes" maxlength="500" placeholder="Es. senza formaggio, allergie, cottura..."></textarea></div>
+          <div class="order-total">Articoli: <b id="cartCount">0</b></div>
+          <div class="grand-total">Totale: <strong id="orderTotal">0,00 €</strong></div>
+          <div class="msg">I prodotti con prezzo variabile (es. pasta del giorno) mostrano “da calcolare”.</div>
+          <button class="btn" id="saveOrder" type="button">Invia ordinazione</button>
+          <div id="orderStatus" class="msg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card table">
+      <div class="ey">Prenotazioni</div>
+      <table><thead><tr><th>Codice</th><th>Data</th><th>Ora</th><th>Persone</th><th>Nome</th><th>Telefono</th><th>Origine</th><th>Note</th><th>Stato</th><th>Azioni</th></tr></thead><tbody id="rows"></tbody></table>
+    </div>
+
+    <div class="card table">
+      <div class="ey">Ordini recenti</div>
+      <table><thead><tr><th>Ora</th><th>Ordine</th><th>Tavolo</th><th>Codice prenotazione</th><th>Note</th><th>Totale</th><th>Stato</th><th>Azione</th></tr></thead><tbody id="orderRows"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<script>
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXYUqgHoZxoBJk9UY1HD_YRnA2krKxVwr9_PTBEyQo3oE-FQPUWWsFQPd9Ky1H-PNeBw/exec";
+let staffPin=sessionStorage.getItem("terra_staff_pin")||"";
+const TIMES=["12:30","13:00","13:30","14:00","19:30","20:00","20:30","21:00"];
+const TABLES=["1 bagno", "2 bagno", "3 bagno", "camino", "1 ingresso", "2 ingresso", "3 ingresso", "4 ingresso", "1 cucina", "2 cucina", "3 cucina", "4 cucina", "pizzeria", "forno", "stufa", "vetrata", "10", "10a", "10b", "11", "12", "13", "13a", "13b", "13c", "14", "15", "16", "17a", "17b", "17c", "18", "19", "19a", "19b", "19c", "19d", "20", "25", "bar 1", "bar 2"];
+const $=id=>document.getElementById(id);
+let menuItems=[];
+let cart=[];
+
+function localDate(v){const p=v.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+function allowedTimes(date){
+  if(!date)return [];
+  const w=localDate(date).getDay();
+  if(w===5)return [];
+  let t=[...TIMES];
+  if(w===3)t=t.filter(x=>["12:30","13:00","13:30","14:00"].includes(x));
+  if(w===6)t=t.filter(x=>x!=="19:30");
+  const now=new Date(), d=localDate(date);
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const selected=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  if(selected.getTime()===today.getTime()){
+    const current=now.getHours()*60+now.getMinutes();
+    t=t.filter(x=>{const [h,m]=x.split(":").map(Number);return h*60+m>current});
+  }
+  return t;
+}
+function fillTimes(){
+  const times=allowedTimes($("sDate").value);
+  $("sTime").innerHTML=times.length?'<option value="">Scegli</option>'+times.map(t=>`<option>${t}</option>`).join(""):'<option value="">Nessun orario disponibile</option>';
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+function jsonp(params){
+  return new Promise((resolve,reject)=>{
+    const cb="tnCb_"+Date.now()+"_"+Math.floor(Math.random()*10000);
+    const s=document.createElement("script");
+    const q=new URLSearchParams({...params,callback:cb,_:Date.now()});
+    let done=false;
+    const finish=()=>{if(done)return;done=true;delete window[cb];s.remove()};
+    window[cb]=data=>{finish();resolve(data)};
+    s.onerror=()=>{finish();reject(new Error("Impossibile collegarsi a Google Sheets."))};
+    s.src=GOOGLE_SCRIPT_URL+"?"+q.toString();
+    document.body.appendChild(s);
+    setTimeout(()=>{if(!done){finish();reject(new Error("Timeout di collegamento a Google Sheets."))}},12000);
+  });
+}
+
+async function login(){
+  $("msg").textContent="Verifica PIN…";
+  try{
+    const d=await jsonp({action:"staffCheck",pin:$("pin").value});
+    if(!d.ok)throw new Error("PIN non autorizzato.");
+    staffPin=$("pin").value;sessionStorage.setItem("terra_staff_pin",staffPin);
+    $("loginCard").classList.add("hidden");$("app").classList.remove("hidden");
+    await load(); await loadMenu(); await loadOrders();
+  }catch(e){$("msg").textContent=e.message}
+}
+
+async function load(){
+  try{
+    const d=await jsonp({action:"list",pin:staffPin});
+    if(!d.ok)throw new Error(d.error||"Accesso non autorizzato.");
+    const rows=d.reservations||[];
+    $("count").textContent=rows.length+" prenotazioni";
+    $("pendingCount").textContent=rows.filter(x=>x.status==="Da confermare").length;
+    $("confirmedCount").textContent=rows.filter(x=>x.status==="Confermata").length;
+    const now=new Date();const iso=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);
+    $("todayCount").textContent=rows.filter(x=>x.date===iso).length;
+    $("rows").innerHTML=rows.map(x=>`<tr>
+      <td><strong>${esc(x.code)}</strong></td><td>${esc(x.dateDisplay)}</td><td>${esc(x.time)}</td><td>${x.people}</td>
+      <td>${esc(x.name)}</td><td>${esc(x.phone)}</td><td>${esc(x.source)}</td><td>${esc(x.notes)}</td>
+      <td><span class="badge ${x.status==="Confermata"?"confirmed":x.status==="Annullata"?"cancelled":"pending"}">${esc(x.status)}</span></td>
+      <td><button class="btn" onclick="setStatus('${esc(x.code)}','Confermata')">Conferma</button> <button class="btn red" onclick="setStatus('${esc(x.code)}','Annullata')">Annulla</button></td>
+    </tr>`).join("");
+  }catch(e){if(/PIN|autoriz/i.test(e.message)){sessionStorage.removeItem("terra_staff_pin");location.reload()}else alert(e.message)}
+}
+
+async function setStatus(code,status){
+  try{
+    const d=await jsonp({action:"status",pin:staffPin,code,status});
+    if(!d.ok)throw new Error(d.error||"Errore");
+    await load();
+  }catch(e){alert(e.message)}
+}
+
+$("login").onclick=login;
+$("refresh").onclick=async()=>{await load();await loadOrders()};
+$("logout").onclick=()=>{sessionStorage.removeItem("terra_staff_pin");location.reload()};
+$("sDate").addEventListener("change",fillTimes);
+
+$("staffForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const n=Number($("sPeople").value);
+  if(n<1||n>100){$("staffStatus").textContent="Massimo 100 persone per prenotazione.";return}
+  if(!allowedTimes($("sDate").value).includes($("sTime").value)){ $("staffStatus").textContent="Data/orario non disponibile."; return; }
+  $("addBtn").disabled=true;$("staffStatus").textContent="Salvataggio…";
+  try{
+    const d=await jsonp({
+      action:"staffCreate",pin:staffPin,source:"telefono",
+      name:$("sName").value.trim(),phone:$("sPhone").value.trim(),
+      date:$("sDate").value,time:$("sTime").value,people:String(n),notes:$("sNotes").value.trim()
+    });
+    if(!d.ok)throw new Error(d.error||"Prenotazione non salvata.");
+    $("staffStatus").textContent="✓ Prenotazione salvata. Codice: "+d.code;
+    $("staffStatus").className="msg ok";
+    e.target.reset();fillTimes();await load();
+  }catch(err){
+    $("staffStatus").textContent="✕ "+err.message;
+    $("staffStatus").className="msg err";
+  }finally{$("addBtn").disabled=false}
+});
+
+// ---------- ORDINAZIONI ----------
+async function loadMenu(){
+  try{
+    const d=await jsonp({action:"menu",pin:staffPin});
+    if(!d.ok)throw new Error(d.error||"Menu non disponibile.");
+    menuItems=d.items||[];
+    renderMenu();
+  }catch(e){$("menuList").innerHTML='<div class="notice">Errore caricamento menu: '+esc(e.message)+'</div>'}
+}
+
+function renderMenu(){
+  const q=$("menuSearch").value.trim().toLowerCase();
+  const items=menuItems.filter(x=>(x.name+" "+x.category).toLowerCase().includes(q));
+  $("menuList").innerHTML=items.map((x,i)=>`
+    <div class="menu-item" onclick="addToCart('${esc(x.id)}')">
+      <strong>${esc(x.name)}</strong>
+      <small>${esc(x.category||"")}</small>
+      <div class="menu-price">${esc(x.priceLabel||"Prezzo non impostato")}${x.priceLabel && !String(x.priceLabel).includes("€") ? " €" : ""}</div>
+    </div>`).join("")||'<div class="notice">Nessun piatto trovato.</div>';
+}
+$("menuSearch").addEventListener("input",renderMenu);
+
+function addToCart(id){
+  const item=menuItems.find(x=>x.id===id);if(!item)return;
+  const existing=cart.find(x=>x.id===id);
+  if(existing)existing.qty++;
+  else cart.push({id:item.id,name:item.name,price:Number(item.price),priceLabel:item.priceLabel,qty:1});
+  renderCart();
+}
+function changeQty(id,delta){
+  const x=cart.find(a=>a.id===id);if(!x)return;
+  x.qty+=delta;if(x.qty<=0)cart=cart.filter(a=>a.id!==id);
+  renderCart();
+}
+function renderCart(){
+  $("cart").innerHTML=cart.map(x=>{
+    const price=Number(x.price);
+    const fixed=Number.isFinite(price);
+    const lineTotal=fixed?price*x.qty:0;
+    const label=x.priceLabel||"Prezzo non impostato";
+    return `<div class="order-line">
+      <div><strong>${esc(x.name)}</strong><small class="line-meta">${esc(label)}${label && !String(label).includes("€")?" €":""} × ${x.qty}</small></div>
+      <div><strong>${fixed?lineTotal.toFixed(2).replace(".",",")+" €":"da calcolare"}</strong></div>
+      <div class="actions"><button class="btn" onclick="changeQty('${esc(x.id)}',-1)">−</button><button class="btn" onclick="changeQty('${esc(x.id)}',1)">+</button></div>
+    </div>`;
+  }).join("")||'<p class="msg">Nessun piatto aggiunto.</p>';
+  const hasVariable=cart.some(x=>!Number.isFinite(Number(x.price)));
+  const total=cart.reduce((s,x)=>s+(Number.isFinite(Number(x.price))?Number(x.price):0)*x.qty,0);
+  $("cartCount").textContent=cart.reduce((s,x)=>s+x.qty,0);
+  $("orderTotal").textContent=hasVariable?"Da calcolare":total.toFixed(2).replace(".",",")+" €";
+}
+async function loadOrders(){
+  try{
+    const d=await jsonp({action:"orders",pin:staffPin});
+    if(!d.ok)throw new Error(d.error||"Errore ordini.");
+    const orders=d.orders||[];
+    $("openOrdersCount").textContent=orders.filter(x=>x.status!=="Servito"&&x.status!=="Annullato").length;
+    $("orderRows").innerHTML=orders.map(x=>`<tr>
+      <td>${esc(x.timeDisplay)}</td><td><strong>${esc(x.orderCode)}</strong></td><td>Tavolo ${esc(x.table)}</td>
+      <td>${esc(x.bookingCode)}</td><td>${esc(x.notes)}</td><td><strong>${x.total!=="" && x.total!==null ? Number(x.total).toFixed(2).replace(".",",")+" €" : "Da calcolare"}</strong></td><td><span class="badge">${esc(x.status)}</span></td>
+      <td><button class="btn" onclick="orderStatus('${esc(x.orderCode)}','In preparazione')">Prepara</button> <button class="btn" onclick="orderStatus('${esc(x.orderCode)}','Servito')">Servito</button></td>
+    </tr>`).join("");
+  }catch(e){console.warn(e)}
+}
+async function orderStatus(code,status){
+  try{
+    const d=await jsonp({action:"orderStatus",pin:staffPin,orderCode:code,status});
+    if(!d.ok)throw new Error(d.error||"Errore");
+    await loadOrders();
+  }catch(e){alert(e.message)}
+}
+$("saveOrder").addEventListener("click",async()=>{
+  const table=$("orderTable").value;
+  if(!table){$("orderStatus").textContent="Seleziona un tavolo.";return}
+  if(!cart.length){$("orderStatus").textContent="Aggiungi almeno un prodotto.";return}
+  $("saveOrder").disabled=true;$("orderStatus").textContent="Invio ordinazione…";
+  try{
+    const d=await jsonp({
+      action:"orderCreate",pin:staffPin,table:table,
+      bookingCode:$("orderBookingCode").value.trim().toUpperCase(),
+      notes:$("orderNotes").value.trim(),
+      items:JSON.stringify(cart)
+    });
+    if(!d.ok)throw new Error(d.error||"Ordinazione non salvata.");
+    $("orderStatus").textContent="✓ Ordinazione salvata: "+d.orderCode;
+    $("orderStatus").className="msg ok";
+    cart=[];$("orderNotes").value="";$("orderBookingCode").value="";renderCart();await loadOrders();
+  }catch(e){
+    $("orderStatus").textContent="✕ "+e.message;$("orderStatus").className="msg err";
+  }finally{$("saveOrder").disabled=false}
+});
+
+function fillTables(){
+  const tables = TABLES;
+  $("orderTable").innerHTML =
+    '<option value="">Scegli tavolo</option>' +
+    tables.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join("");
+},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+}
+
+fillTables();fillTimes();renderCart();
+
+if(staffPin){
+  jsonp({action:"staffCheck",pin:staffPin}).then(async d=>{
+    if(d.ok){
+      $("loginCard").classList.add("hidden");$("app").classList.remove("hidden");
+      await load();await loadMenu();await loadOrders();
+    }else sessionStorage.removeItem("terra_staff_pin");
+  }).catch(()=>sessionStorage.removeItem("terra_staff_pin"));
+}
+const now=new Date();now.setMinutes(now.getMinutes()-now.getTimezoneOffset());$("sDate").min=now.toISOString().slice(0,10);
+</script>
+</body>
+</html>
