@@ -217,15 +217,80 @@ const today=new Date();
 today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
 dateInput.min=today.toISOString().slice(0,10);
 
+function updateBookingTimes(){
+  const value=dateInput.value;
+  timeInput.innerHTML="";
+  capacityStatus.textContent="";
+
+  if(!value){
+    timeInput.innerHTML='<option value="">Prima scegli il giorno</option>';
+    timeInput.disabled=true;
+    submitButton.disabled=true;
+    return;
+  }
+
+  const day=localDateFromInput(value);
+  const weekday=day.getDay();
+
+  if(weekday===5){
+    timeInput.innerHTML='<option value="">Locale chiuso il venerdì</option>';
+    timeInput.disabled=true;
+    submitButton.disabled=true;
+    statusBox.textContent="Il ristorante è chiuso il venerdì.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  let availableTimes=[...ALL_TIMES];
+
+  // Mercoledì: solo pranzo
+  if(weekday===3){
+    availableTimes=availableTimes.filter(t=>
+      ["12:30","13:00","13:30","14:00"].includes(t)
+    );
+  }
+
+  // Sabato: niente 19:30
+  if(weekday===6){
+    availableTimes=availableTimes.filter(t=>t!=="19:30");
+  }
+
+  // SE LA DATA È OGGI, NASCONDE GLI ORARI GIÀ PASSATI
+  const now=new Date();
+  const selectedDate=new Date(day.getFullYear(),day.getMonth(),day.getDate());
+  const currentDate=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+
+  if(selectedDate.getTime()===currentDate.getTime()){
+    const currentMinutes=now.getHours()*60+now.getMinutes();
+
+    availableTimes=availableTimes.filter(t=>{
+      const [hours,minutes]=t.split(":").map(Number);
+      const timeMinutes=hours*60+minutes;
+
+      return timeMinutes>currentMinutes;
+    });
+  }
+
+  if(availableTimes.length===0){
+    timeInput.innerHTML='<option value="">Nessun orario disponibile</option>';
+    timeInput.disabled=true;
+    submitButton.disabled=true;
+    return;
+  }
+
+  timeInput.disabled=false;
+  submitButton.disabled=false;
+  statusBox.className="status";
+
+  timeInput.innerHTML=
+    '<option value="">Scegli l’orario</option>'+
+    availableTimes.map(t=>`<option value="${t}">${t}</option>`).join("");
+
+  checkCapacity();
+}
+
 dateInput.addEventListener("change",updateBookingTimes);
 timeInput.addEventListener("change",checkCapacity);
-
-peopleInput.addEventListener("change",function(){
-  const n=Number(this.value||0);
-  if(n>MAX_PEOPLE_PER_BOOKING){
-    this.value=MAX_PEOPLE_PER_BOOKING;
-  }
-});
 
 updateBookingTimes();
 
