@@ -53,18 +53,62 @@ const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzXYUqgHoZxoBJk
 document.getElementById("year").textContent=new Date().getFullYear();
 addEventListener("scroll",()=>document.getElementById("header").classList.toggle("scrolled",scrollY>30),{passive:true});
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.target).classList.add("active")});
-const d=document.getElementById("date");const today=new Date();today.setMinutes(today.getMinutes()-today.getTimezoneOffset());d.min=today.toISOString().slice(0,10);
-document.getElementById("bookingForm").addEventListener("submit",async e=>{
-e.preventDefault();
-if(!GOOGLE_SCRIPT_URL.startsWith("https://script.google.com/")){status.textContent="Prima collega il modulo a Google Sheets.";status.className="status show error";return}
-submit.disabled=true;submit.textContent="Invio…";
-try{
-const body=new URLSearchParams({name:name.value.trim(),phone:phone.value.trim(),date:date.value,time:time.value,people:String(people.value),notes:notes.value.trim(),website:""});
-await fetch(GOOGLE_SCRIPT_URL,{method:"POST",mode:"no-cors",body});
-e.target.reset();status.textContent="Richiesta inviata! Il ristorante potrà ricontattarti per confermare il tavolo.";status.className="status show ok";
-}catch(err){console.error(err);status.textContent="Invio non riuscito. Riprova tra poco.";status.className="status show error"}
-finally{submit.disabled=false;submit.textContent="Invia prenotazione →"}
+const dateInput=document.getElementById("date");
+const nameInput=document.getElementById("name");
+const phoneInput=document.getElementById("phone");
+const timeInput=document.getElementById("time");
+const peopleInput=document.getElementById("people");
+const notesInput=document.getElementById("notes");
+const submitButton=document.getElementById("submit");
+const statusBox=document.getElementById("status");
+
+const today=new Date();
+today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
+dateInput.min=today.toISOString().slice(0,10);
+
+document.getElementById("bookingForm").addEventListener("submit",async function(e){
+  e.preventDefault();
+
+  if(!GOOGLE_SCRIPT_URL.startsWith("https://script.google.com/")){
+    statusBox.textContent="Il modulo non è ancora collegato a Google Sheets.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  submitButton.disabled=true;
+  submitButton.textContent="Invio in corso…";
+  statusBox.className="status";
+
+  const body=new URLSearchParams({
+    name:nameInput.value.trim(),
+    phone:phoneInput.value.trim(),
+    date:dateInput.value,
+    time:timeInput.value,
+    people:peopleInput.value,
+    notes:notesInput.value.trim(),
+    website:""
+  });
+
+  try{
+    await fetch(GOOGLE_SCRIPT_URL,{
+      method:"POST",
+      mode:"no-cors",
+      body:body
+    });
+
+    this.reset();
+    statusBox.textContent="✓ Prenotazione effettuata! Ti ricontatteremo al numero indicato per confermare il tavolo.";
+    statusBox.className="status show ok";
+  }catch(err){
+    console.error(err);
+    statusBox.textContent="Non è stato possibile inviare la prenotazione. Riprova tra poco.";
+    statusBox.className="status show error";
+  }finally{
+    submitButton.disabled=false;
+    submitButton.textContent="Invia prenotazione →";
+  }
 });
 </script>
 </body>
+</html>
 </html>
