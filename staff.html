@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terra Nostra · Area dipendenti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#1d3027;--cream:#f6efe3;--paper:#fcfaf5;--terra:#a85d45;--gold:#c39a59;--ink:#252923;--muted:#74746c;--line:#2529231c;--serif:"Cormorant Garamond",Georgia,serif;--sans:Inter,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans)}.wrap{width:min(calc(100% - 30px),1200px);margin:40px auto}.card{background:#fff;padding:28px;border-radius:20px;box-shadow:0 18px 50px #00000010}.login{max-width:440px;margin:10vh auto}.field{display:flex;flex-direction:column;gap:6px;margin:13px 0}.field label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted)}input,select,textarea{font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px}.btn{border:0;border-radius:999px;padding:11px 17px;background:var(--green);color:#fff;font-weight:700;cursor:pointer}.red{background:var(--terra)}.hidden{display:none}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.ey{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700}h1,h2,h3{font-family:var(--serif)}h1{font-size:55px;line-height:.9;margin:8px 0}h2{font-size:42px}.msg{margin-top:10px;font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.full{grid-column:1/-1}.table{margin-top:18px;overflow:auto}table{width:100%;border-collapse:collapse;min-width:980px}th,td{text-align:left;padding:11px;border-bottom:1px solid #eee;font-size:12px}th{font-size:10px;text-transform:uppercase;color:#777}.badge{padding:5px 8px;border-radius:999px;background:#eee;font-size:10px}.confirmed{background:#e3f3e8;color:#1f673d}.cancelled{background:#f8e4e4;color:#8a2d2d}.pending{background:#fff2cf;color:#7b5d15}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.stat{padding:16px;border-radius:14px;background:var(--cream)}.stat strong{display:block;font:600 35px var(--serif)}.formcard{margin-top:18px}.notice{padding:12px;border-radius:10px;background:#fff7df;font-size:11px;margin-bottom:15px}.ok{background:#e8f5ed;color:#20613b}.err{background:#fbeaea;color:#8a2e2e}
+@media(max-width:700px){.grid,.stats{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loginCard" class="card login">
+    <div class="ey">Terra Nostra</div>
+    <h1>Area dipendenti</h1>
+    <p>Inserisci il PIN del personale per gestire le prenotazioni.</p>
+    <div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="12"></div>
+    <button class="btn" id="login">Accedi</button>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="top">
+      <div><div class="ey">Gestione sala</div><h1>Prenotazioni</h1><p id="count"></p></div>
+      <div class="toolbar"><button class="btn" id="refresh">Aggiorna</button><button class="btn red" id="logout">Esci</button></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span>Da confermare</span><strong id="pendingCount">0</strong></div>
+      <div class="stat"><span>Confermate</span><strong id="confirmedCount">0</strong></div>
+      <div class="stat"><span>Oggi</span><strong id="todayCount">0</strong></div>
+    </div>
+
+    <div class="card formcard">
+      <div class="ey">Prenotazione telefonica</div>
+      <h2>Aggiungi una prenotazione</h2>
+      <div class="notice">Usa questa sezione quando il cliente chiama il ristorante. La prenotazione viene salvata direttamente nello stesso foglio del sito.</div>
+      <form id="staffForm">
+        <div class="grid">
+          <div class="field"><label>Nome e cognome *</label><input id="sName" required maxlength="100"></div>
+          <div class="field"><label>Telefono *</label><input id="sPhone" required maxlength="25" inputmode="tel"></div>
+          <div class="field"><label>Data *</label><input id="sDate" type="date" required></div>
+          <div class="field"><label>Orario *</label><select id="sTime" required></select></div>
+          <div class="field"><label>Persone *</label><input id="sPeople" type="number" min="1" max="100" value="2" required></div>
+          <div class="field"><label>Note</label><input id="sNotes" maxlength="500"></div>
+        </div>
+        <button class="btn" id="addBtn" type="submit">Salva prenotazione telefonica</button>
+        <div id="staffStatus" class="msg"></div>
+      </form>
+    </div>
+
+    <div class="card table">
+      <table><thead><tr><th>Codice</th><th>Data</th><th>Ora</th><th>Persone</th><th>Nome</th><th>Telefono</th><th>Origine</th><th>Note</th><th>Stato</th><th>Azioni</th></tr></thead>
+      <tbody id="rows"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<script>
+const GOOGLE_SCRIPT_URL="INCOLLA_QUI_URL_APPS_SCRIPT";
+let staffPin=sessionStorage.getItem("terra_staff_pin")||"";
+const MAX_PEOPLE=100;
+const TIMES=["12:30","13:00","13:30","14:00","19:30","20:00","20:30","21:00"];
+
+const $=id=>document.getElementById(id);
+function localDate(v){const p=v.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+function allowedTimes(date){
+  if(!date)return [];
+  const w=localDate(date).getDay();
+  if(w===5)return [];
+  let t=[...TIMES];
+  if(w===3)t=t.filter(x=>["12:30","13:00","13:30","14:00"].includes(x));
+  if(w===6)t=t.filter(x=>x!=="19:30");
+  return t;
+}
+function fillTimes(){
+  const times=allowedTimes($("sDate").value);
+  $("sTime").innerHTML=times.length?'<option value="">Scegli</option>'+times.map(t=>`<option>${t}</option>`).join(""):'<option value="">Locale chiuso</option>';
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+async function api(params){
+  const r=await fetch(GOOGLE_SCRIPT_URL,{method:"POST",body:new URLSearchParams(params)});
+  const d=await r.json();
+  if(!d.ok)throw Error(d.error||"Errore");
+  return d;
+}
+async function login(){
+  try{
+    await api({action:"staffCheck",pin:$("pin").value});
+    staffPin=$("pin").value;sessionStorage.setItem("terra_staff_pin",staffPin);
+    $("loginCard").classList.add("hidden");$("app").classList.remove("hidden");load();
+  }catch(e){$("msg").textContent=e.message}
+}
+async function load(){
+  try{
+    const d=await api({action:"list",pin:staffPin});
+    const rows=d.reservations||[];
+    $("count").textContent=rows.length+" prenotazioni";
+    $("pendingCount").textContent=rows.filter(x=>x.status==="Da confermare").length;
+    $("confirmedCount").textContent=rows.filter(x=>x.status==="Confermata").length;
+    const today=new Date();const iso=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
+    $("todayCount").textContent=rows.filter(x=>x.date===iso).length;
+    $("rows").innerHTML=rows.map(x=>`<tr>
+      <td><strong>${esc(x.code)}</strong></td><td>${esc(x.dateDisplay)}</td><td>${esc(x.time)}</td><td>${x.people}</td>
+      <td>${esc(x.name)}</td><td>${esc(x.phone)}</td><td>${esc(x.source)}</td><td>${esc(x.notes)}</td>
+      <td><span class="badge ${x.status==="Confermata"?"confirmed":x.status==="Annullata"?"cancelled":"pending"}">${esc(x.status)}</span></td>
+      <td><button class="btn" onclick="setStatus('${esc(x.code)}','Confermata')">Conferma</button> <button class="btn red" onclick="setStatus('${esc(x.code)}','Annullata')">Annulla</button></td>
+    </tr>`).join("");
+  }catch(e){
+    if(/PIN|autorizz/i.test(e.message)){sessionStorage.removeItem("terra_staff_pin");location.reload()}
+    else alert(e.message);
+  }
+}
+async function setStatus(code,status){
+  try{await api({action:"status",pin:staffPin,code,status});load()}catch(e){alert(e.message)}
+}
+$("login").onclick=login;
+$("refresh").onclick=load;
+$("logout").onclick=()=>{sessionStorage.removeItem("terra_staff_pin");location.reload()};
+$("sDate").addEventListener("change",fillTimes);
+$("staffForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const n=Number($("sPeople").value);
+  if(n<1||n>MAX_PEOPLE){$("staffStatus").textContent="Massimo 100 persone per prenotazione.";return}
+  $("addBtn").disabled=true;$("staffStatus").textContent="Salvataggio…";
+  try{
+    const d=await api({action:"staffCreate",pin:staffPin,source:"telefono",name:$("sName").value.trim(),phone:$("sPhone").value.trim(),date:$("sDate").value,time:$("sTime").value,people:String(n),notes:$("sNotes").value.trim()});
+    e.target.reset();fillTimes();$("staffStatus").textContent="Prenotazione "+d.code+" salvata.";
+    load();
+  }catch(err){$("staffStatus").textContent=err.message}
+  finally{$("addBtn").disabled=false}
+});
+if(staffPin){api({action:"staffCheck",pin:staffPin}).then(()=>{$("loginCard").classList.add("hidden");$("app").classList.remove("hidden");load()}).catch(()=>sessionStorage.removeItem("terra_staff_pin"))}
+const now=new Date();now.setMinutes(now.getMinutes()-now.getTimezoneOffset());$("sDate").min=now.toISOString().slice(0,10);fillTimes();
+</script>
+</body>
+</html>
