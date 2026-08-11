@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terra Nostra · Scapoli</title>
+<meta name="description" content="Terra Nostra a Scapoli: cucina molisana, pizza e sapori delle Mainarde.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#1d3027;--green2:#294236;--cream:#f6efe3;--paper:#fcfaf5;--terra:#a85d45;--gold:#c39a59;--ink:#252923;--muted:#74746c;--line:#2529231c;--serif:"Cormorant Garamond",Georgia,serif;--sans:Inter,Arial,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans)}a{text-decoration:none;color:inherit}.container{width:min(calc(100% - 34px),1180px);margin:auto}
+header{position:fixed;z-index:20;width:100%;top:0;padding:17px 0;color:#fff;transition:.35s}header.scrolled{background:#fcfaf5ed;color:var(--ink);backdrop-filter:blur(16px);box-shadow:0 8px 28px #0000000b}.nav{display:flex;align-items:center;justify-content:space-between}.logo{font:700 30px var(--serif)}nav{display:flex;gap:22px;align-items:center;font-size:11px;font-weight:700}.nav-btn{padding:10px 16px;background:var(--terra);border-radius:999px;color:#fff!important}
+.hero{min-height:94svh;position:relative;display:flex;align-items:end;color:#fff;overflow:hidden}.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0c1910e8,#0c19104b),linear-gradient(0deg,#08120dcc,transparent 60%)}.hero-content{position:relative;z-index:1;padding:165px 0 90px}.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--gold)}.hero h1{font:600 clamp(72px,12vw,150px)/.77 var(--serif);letter-spacing:-.055em;margin:18px 0}.hero h1 em,h2 em{color:#dfc58d}.hero p{max-width:570px;color:#fffC;font-size:15px}.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:49px;padding:0 21px;border:0;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;transition:.25s}.btn:hover{transform:translateY(-2px)}.primary{background:var(--terra);color:#fff}.light{background:#fff;color:var(--green)}.outline{background:#fff1;border:1px solid #fff6;color:#fff}
+section{padding:100px 0}h2{font:600 clamp(54px,7vw,88px)/.88 var(--serif);letter-spacing:-.045em;margin:10px 0}.split{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}.dark{background:var(--green);color:#fff}.dark .muted{color:#fffA}.photo{width:100%;aspect-ratio:1/.8;object-fit:cover;border-radius:22px}.muted{color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:7px;margin:24px 0}.chip{border:1px solid #fff2;padding:8px 12px;border-radius:999px;font-size:9px}
+.menu,.culture{background:var(--cream)}.tabs{display:flex;gap:6px;overflow:auto;margin:30px 0;padding:6px;border:1px solid var(--line);border-radius:999px}.tab{border:0;background:transparent;padding:10px 15px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap;cursor:pointer}.tab.active{background:var(--green);color:#fff}.panel{display:none}.panel.active{display:block}.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dish{padding:22px;border:1px solid var(--line);border-radius:17px;background:#fff9;transition:.25s}.dish:hover{background:#fff;transform:translateY(-3px);box-shadow:0 18px 45px #1d302714}.dish h3{font:600 27px/1 var(--serif);margin:0 0 8px}.dish p{font-size:11px;color:var(--muted);margin:0}.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#c39a5922;color:#7a5a22;font-size:8px;font-weight:700;text-transform:uppercase;margin-bottom:10px}
+.gallery{display:grid;grid-template-columns:1.25fr .75fr .75fr;grid-auto-rows:230px;gap:12px;margin-top:35px}.gallery figure{position:relative;margin:0;overflow:hidden;border-radius:19px}.gallery figure:first-child{grid-row:span 2}.gallery figure:last-child{grid-column:span 2}.gallery img{width:100%;height:100%;object-fit:cover;transition:.6s}.gallery figure:hover img{transform:scale(1.06)}.gallery figcaption{position:absolute;left:16px;bottom:12px;color:#fff;font:600 25px var(--serif);text-shadow:0 2px 15px #000}
+.culture-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.culture-card{position:relative;min-height:470px;overflow:hidden;border-radius:22px;color:#fff}.culture-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.culture-card:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#08120dea,transparent 65%)}.culture-text{position:absolute;z-index:1;left:30px;right:30px;bottom:30px}.culture-text h3{font:600 56px/.88 var(--serif);margin:8px 0}.culture-text p{font-size:12px;color:#fffa}
+.booking{background:var(--green);color:#fff}.booking-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:65px;align-items:start}.booking h2{margin-top:15px}.booking-card{background:#fff;color:var(--ink);padding:28px;border-radius:22px;box-shadow:0 25px 70px #0003}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--muted)}input,select,textarea{font:inherit;width:100%;padding:13px;border:1px solid var(--line);border-radius:10px;outline:0;background:#fff}textarea{min-height:90px;resize:vertical}.note{font-size:10px;color:var(--muted)}.status{display:none;margin-top:12px;padding:12px;border-radius:10px;font-size:11px}.status.show{display:block}.ok{background:#e8f5ed;color:#20613b}.error{background:#fbeaea;color:#8a2e2e}.booking-result{margin-top:18px;padding:24px;border-radius:18px;background:#f7f1e6;border:1px solid #c39a5938;text-align:center}.booking-result[hidden]{display:none}.booking-result-icon{width:46px;height:46px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:#1d3027;color:#fff;font-size:22px}.booking-result h3{font:600 32px/1 var(--serif);margin:7px 0}.booking-result p{font-size:11px;color:var(--muted)}.booking-code{margin:17px auto;padding:15px 18px;border-radius:12px;background:#fff;border:1px dashed #c39a59;font:700 22px/1 var(--sans);letter-spacing:.09em;color:#1d3027;max-width:290px}.result-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.secondary{background:#1d3027;color:#fff}
+.contacts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.contact{padding:27px;border:1px solid var(--line);border-radius:18px;background:#fff9}.contact h3{font:600 33px var(--serif);margin:8px 0}.contact p{font-size:11px;color:var(--muted);min-height:42px}footer{background:#14231c;color:#fffa;padding:28px 0;font-size:10px}.footer{display:flex;justify-content:space-between}.admin-link{color:#e2c58c}.floating{position:fixed;z-index:19;right:15px;bottom:15px;display:flex;gap:7px;padding:6px;border-radius:999px;background:#1d3027ed;box-shadow:0 15px 40px #0004}.floating a{width:45px;height:45px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700}.wa{background:#208d5b}.phone{background:var(--terra)}
+@media(max-width:800px){nav{display:none}.split,.booking-grid,.culture-grid,.contacts{grid-template-columns:1fr}.menu-grid,.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.gallery{grid-template-columns:1fr 1fr;grid-auto-rows:180px}.gallery figure:first-child{grid-column:span 2;grid-row:auto}.gallery figure:last-child{grid-column:span 2}}
+</style>
+</head>
+<body>
+<header id="header"><div class="container nav"><a class="logo" href="#home">Terra Nostra</a><nav><a href="#cucina">Cucina</a><a href="#menu">Menu</a><a href="#galleria">Foto</a><a href="#territorio">Territorio</a><a class="nav-btn" href="#prenota">Prenota</a></nav></div></header>
+
+<section class="hero" id="home"><img src="scapoli.jpg" alt="Scapoli e le Mainarde" fetchpriority="high"><div class="container hero-content"><div class="eyebrow">Scapoli · Cuore delle Mainarde</div><h1>Il gusto<br><em>di casa.</em></h1><p>Cucina italiana, pizza e sapori del territorio. Una tavola sincera nel cuore del Molise.</p><div class="buttons"><a class="btn primary" href="#prenota">Prenota un tavolo →</a><a class="btn outline" href="#menu">Scopri il menu</a></div></div></section>
+
+<section class="dark" id="cucina"><div class="container split"><img class="photo" src="ravioli.jpg" alt="Ravioloni alla scapolese" loading="lazy"><div><div class="eyebrow">Specialità locale</div><h2>Ravioloni<br><em>alla scapolese.</em></h2><p class="muted">Pasta fresca e sapori della tradizione molisana, nel piatto che racconta più di ogni altro la nostra terra.</p><div class="chips"><span class="chip">Pasta fresca</span><span class="chip">Patate</span><span class="chip">Salsiccia</span><span class="chip">Bieta</span></div><a class="btn light" href="#menu">Vedi il menu</a></div></div></section>
+
+<section class="menu" id="menu"><div class="container"><div class="eyebrow">La nostra carta</div><h2>Scegli il tuo <em>momento.</em></h2><p class="muted">Menu senza prezzi, organizzato per categorie.</p>
+<div class="tabs"><button class="tab active" data-target="antipasti">Antipasti</button><button class="tab" data-target="primi">Primi</button><button class="tab" data-target="secondi">Secondi</button><button class="tab" data-target="pizza">Pizza</button><button class="tab" data-target="contorni">Contorni</button><button class="tab" data-target="dolci">Dolci</button></div>
+<div class="panel active" id="antipasti"><div class="menu-grid"><div class="dish"><span class="badge">Della casa</span><h3>Antipasto all'italiana</h3><p>Prosciutto crudo, formaggi locali, salsiccia secca e bruschette.</p></div><div class="dish"><h3>Bruschette miste</h3></div><div class="dish"><h3>Prosciutto crudo e melone</h3></div><div class="dish"><h3>Zuppa di fagioli</h3></div><div class="dish"><h3>Formaggi vari</h3></div></div></div>
+<div class="panel" id="primi"><div class="menu-grid"><div class="dish"><span class="badge">Specialità locale</span><h3>Ravioloni alla scapolese</h3><p>Patate, salsiccia, bieta e prosciutto crudo.</p></div><div class="dish"><h3>Fettuccine al cinghiale</h3></div><div class="dish"><span class="badge">Consigliato</span><h3>Fettuccine ai porcini</h3></div><div class="dish"><h3>Fettuccine al capriolo</h3></div><div class="dish"><h3>Lasagne alla bolognese</h3></div><div class="dish"><h3>Raviolini al tartufo</h3></div></div></div>
+<div class="panel" id="secondi"><div class="menu-grid"><div class="dish"><span class="badge">Alla brace</span><h3>Arrosto misto</h3></div><div class="dish"><h3>Bistecca di vitello</h3></div><div class="dish"><h3>Bistecca di maiale</h3></div><div class="dish"><h3>Agnello arrosto</h3></div><div class="dish"><h3>Salsiccia di maiale</h3></div><div class="dish"><h3>Vitello con rucola e porcini</h3></div></div></div>
+<div class="panel" id="pizza"><div class="menu-grid"><div class="dish"><span class="badge">Bianca</span><h3>Tartufo</h3></div><div class="dish"><span class="badge">Bianca</span><h3>Porcini</h3></div><div class="dish"><span class="badge">Bianca</span><h3>Rucola e crudo</h3></div><div class="dish"><span class="badge">Bianca</span><h3>Quattro formaggi</h3></div><div class="dish"><span class="badge">Rossa</span><h3>Margherita</h3></div><div class="dish"><span class="badge">Rossa</span><h3>Diavola</h3></div><div class="dish"><span class="badge">Rossa</span><h3>Boscaiola</h3></div><div class="dish"><span class="badge">Specialità</span><h3>Terra Nostra</h3></div><div class="dish"><h3>Quattro stagioni</h3></div><div class="dish"><h3>Calzone</h3></div></div></div>
+<div class="panel" id="contorni"><div class="menu-grid"><div class="dish"><h3>Insalata verde-mista</h3></div><div class="dish"><h3>Patatine fritte</h3></div><div class="dish"><h3>Verdure grigliate</h3></div><div class="dish"><h3>Insalata di zucchine</h3></div></div></div>
+<div class="panel" id="dolci"><div class="menu-grid"><div class="dish"><h3>Pan di Stelle</h3></div><div class="dish"><h3>Tiramisù</h3></div><div class="dish"><h3>Crostata</h3></div><div class="dish"><h3>Dolce del giorno</h3></div></div></div>
+</div></section>
+
+<section id="galleria"><div class="container"><div class="eyebrow">Dalla cucina</div><h2>Prima con gli occhi, <em>poi con il gusto.</em></h2><div class="gallery"><figure><img src="antipasto.jpg" alt="Antipasto" loading="lazy"><figcaption>Antipasto</figcaption></figure><figure><img src="ravioli.jpg" alt="Ravioloni" loading="lazy"><figcaption>Ravioloni</figcaption></figure><figure><img src="pasta.jpg" alt="Pasta fresca" loading="lazy"><figcaption>Pasta</figcaption></figure><figure><img src="pizza.jpg" alt="Pizza" loading="lazy"><figcaption>Pizza</figcaption></figure><figure><img src="caption(1).jpg" alt="La sala" loading="lazy"><figcaption>La sala</figcaption></figure></div></div></section>
+
+<section class="culture" id="territorio"><div class="container culture-grid"><article class="culture-card"><img src="scapoli.jpg" alt="Scapoli e le Mainarde" loading="lazy"><div class="culture-text"><div class="eyebrow">Il territorio</div><h3>Le Mainarde.</h3><p>Scapoli vive tra il borgo e le montagne: un paesaggio che diventa parte dell'esperienza della tavola.</p></div></article><article class="culture-card"><img src="zampogna.jpg" alt="Zampogna tradizionale di Scapoli" loading="lazy"><div class="culture-text"><div class="eyebrow">La tradizione</div><h3>Le zampogne.</h3><p>Una tradizione artigianale e musicale profondamente radicata nel paese.</p><a class="btn outline" href="https://www.museodellazampogna.it/it/" target="_blank" rel="noopener noreferrer">Scopri →</a></div></article></div></section>
+
+<section class="booking" id="prenota"><div class="container booking-grid"><div><div class="eyebrow">Prenotazioni</div><h2>Il tuo tavolo<br><em>ti aspetta.</em></h2><p class="muted">Nessun account. Inserisci nome, telefono, giorno, ora e numero di persone. La richiesta viene registrata nel foglio del ristorante.</p></div><div class="booking-card"><form id="bookingForm"><div class="form-grid"><div class="field"><label>Nome e cognome *</label><input id="name" required maxlength="100" autocomplete="name"></div><div class="field"><label>Numero di telefono *</label><input id="phone" required maxlength="25" autocomplete="tel" inputmode="tel"></div><div class="field"><label>Giorno *</label><input id="date" type="date" required></div><div class="field"><label>Orario *</label><select id="time" required><option value="">Prima scegli il giorno</option></select><div id="capacityStatus" class="note"></div></div><div class="field"><label>Persone *</label><select id="people" required><option value="">Scegli</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option><option>32</option><option>33</option><option>34</option><option>35</option><option>36</option><option>37</option><option>38</option><option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option><option>46</option><option>47</option><option>48</option><option>49</option><option>50</option><option>51</option><option>52</option><option>53</option><option>54</option><option>55</option><option>56</option><option>57</option><option>58</option><option>59</option><option>60</option><option>61</option><option>62</option><option>63</option><option>64</option><option>65</option><option>66</option><option>67</option><option>68</option><option>69</option><option>70</option><option>71</option><option>72</option><option>73</option><option>74</option><option>75</option><option>76</option><option>77</option><option>78</option><option>79</option><option>80</option><option>81</option><option>82</option><option>83</option><option>84</option><option>85</option><option>86</option><option>87</option><option>88</option><option>89</option><option>90</option><option>91</option><option>92</option><option>93</option><option>94</option><option>95</option><option>96</option><option>97</option><option>98</option><option>99</option><option>100</option></select></div><div class="field full"><label>Note</label><textarea id="notes" maxlength="500" placeholder="Eventuali richieste..."></textarea></div></div><p class="note">Il numero di telefono serve al ristorante per identificare e ricontattare la prenotazione.</p><button class="btn primary" id="submit" type="submit">Invia prenotazione →</button><div id="status" class="status"></div>
+<div id="bookingResult" class="booking-result" hidden>
+  <div class="booking-result-icon">✓</div>
+  <div class="eyebrow">Prenotazione ricevuta</div>
+  <h3>Il tuo tavolo è stato richiesto.</h3>
+  <p>Conserva il codice della prenotazione per eventuali comunicazioni con il ristorante.</p>
+  <div class="booking-code" id="bookingCode">TN-000000-0000</div>
+  <div class="result-actions">
+    <button class="btn secondary" type="button" id="copyCode">Copia codice</button>
+    <a class="btn primary" id="shareCode" target="_blank" rel="noopener noreferrer">WhatsApp →</a>
+  </div>
+</div></form></div></div></section>
+
+<section><div class="container"><div class="eyebrow">Contatti</div><h2>Parliamo di <em>tavola.</em></h2><div class="contacts"><div class="contact"><div class="eyebrow">WhatsApp</div><h3>Scrivici</h3><p>Informazioni e disponibilità.</p><a class="btn primary" href="https://wa.me/390865954135?text=Ciao!%20Vorrei%20informazioni%20per%20prenotare%20un%20tavolo%20da%20Terra%20Nostra" target="_blank" rel="noopener noreferrer">WhatsApp →</a></div><div class="contact"><div class="eyebrow">Telefono</div><h3>Chiamaci</h3><p>Parla direttamente con il ristorante.</p><a class="btn primary" href="tel:+390865954135">0865 954135 →</a></div><div class="contact"><div class="eyebrow">Dove</div><h3>Scapoli</h3><p>Via Fonte La Villa, 1 · 86070 Scapoli (IS)</p><a class="btn primary" href="https://www.google.com/maps/search/?api=1&query=Terra%20Nostra%20Via%20Fonte%20La%20Villa%201%20Scapoli" target="_blank" rel="noopener noreferrer">Maps →</a></div></div></div></section>
+
+<footer><div class="container footer"><a class="admin-link" href="./staff.html">Area dipendenti</a><span><span>© <span id="year"></span> Terra Nostra · Scapoli</span><span>Tradizione, territorio, tavola.</span></div></footer>
+<div class="floating"><a class="wa" href="https://wa.me/390865954135?text=Ciao!%20Vorrei%20informazioni%20per%20prenotare%20un%20tavolo%20da%20Terra%20Nostra" target="_blank" rel="noopener noreferrer">WA</a><a class="phone" href="tel:+390865954135">☎</a></div>
+
+<script>
+const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzXYUqgHoZxoBJk9UY1HD_YRnA2krKxVwr9_PTBEyQo3oE-FQPUWWsFQPd9Ky1H-PNeBw/exec";
+document.getElementById("year").textContent=new Date().getFullYear();
+addEventListener("scroll",()=>document.getElementById("header").classList.toggle("scrolled",scrollY>30),{passive:true});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.target).classList.add("active")});
+const dateInput=document.getElementById("date");
+const nameInput=document.getElementById("name");
+const phoneInput=document.getElementById("phone");
+const timeInput=document.getElementById("time");
+const peopleInput=document.getElementById("people");
+const notesInput=document.getElementById("notes");
+const submitButton=document.getElementById("submit");
+const statusBox=document.getElementById("status");
+const capacityStatus=document.getElementById("capacityStatus");
+
+const ALL_TIMES=["12:30","13:00","13:30","14:00","19:30","20:00","20:30","21:00"];
+const MAX_PEOPLE_PER_BOOKING=100;
+const MAX_PEOPLE_PER_SHIFT=120;
+const CLOSED_MESSAGE="Il ristorante è chiuso in questa giornata.";
+
+function localDateFromInput(value){
+  const parts=value.split("-");
+  return new Date(Number(parts[0]),Number(parts[1])-1,Number(parts[2]));
+}
+
+function shiftForTime(time){
+  if(!time) return "";
+  return time.startsWith("1") && time!=="19:30" ? "pranzo" : "cena";
+}
+
+function updateBookingTimes(){
+  const value=dateInput.value;
+  timeInput.innerHTML="";
+  capacityStatus.textContent="";
+
+  if(!value){
+    timeInput.innerHTML='<option value="">Prima scegli il giorno</option>';
+    timeInput.disabled=true;
+    submitButton.disabled=true;
+    return;
+  }
+
+  const day=localDateFromInput(value);
+  const weekday=day.getDay();
+
+  if(weekday===5){
+    timeInput.innerHTML='<option value="">Locale chiuso il venerdì</option>';
+    timeInput.disabled=true;
+    submitButton.disabled=true;
+    statusBox.textContent=CLOSED_MESSAGE;
+    statusBox.className="status show error";
+    return;
+  }
+
+  let availableTimes=[...ALL_TIMES];
+
+  if(weekday===3){
+    availableTimes=availableTimes.filter(t=>["12:30","13:00","13:30","14:00"].includes(t));
+  }
+
+  if(weekday===6){
+    availableTimes=availableTimes.filter(t=>t!=="19:30");
+  }
+
+  timeInput.disabled=false;
+  submitButton.disabled=false;
+  statusBox.className="status";
+
+  timeInput.innerHTML='<option value="">Scegli l’orario</option>'+
+    availableTimes.map(t=>`<option value="${t}">${t}</option>`).join("");
+
+  checkCapacity();
+}
+
+function checkCapacity(){
+  const value=dateInput.value;
+  const time=timeInput.value;
+
+  if(!value || !time){
+    capacityStatus.textContent="";
+    return;
+  }
+
+  const shift=shiftForTime(time);
+
+  // JSONP: Apps Script restituisce il numero già prenotato per quel turno.
+  const callbackName="terraNostraCapacity_"+Date.now();
+  window[callbackName]=function(data){
+    try{
+      if(data && data.full){
+        capacityStatus.textContent="Turno pieno: non sono più disponibili posti per questa fascia oraria.";
+        capacityStatus.style.color="#a33";
+        submitButton.disabled=true;
+
+        const option=timeInput.querySelector(`option[value="${time}"]`);
+        if(option) option.textContent=`${time} — PIENO`;
+      }else if(data){
+        const remaining=Math.max(0,MAX_PEOPLE_PER_SHIFT-Number(data.booked||0));
+        capacityStatus.textContent=`Disponibilità turno: ${remaining} persone.`;
+        capacityStatus.style.color="";
+        submitButton.disabled=false;
+      }
+    }finally{
+      delete window[callbackName];
+      const s=document.getElementById(callbackName);
+      if(s) s.remove();
+    }
+  };
+
+  const script=document.createElement("script");
+  script.id=callbackName;
+  script.src=GOOGLE_SCRIPT_URL+
+    "?action=availability&date="+encodeURIComponent(value)+
+    "&shift="+encodeURIComponent(shift)+
+    "&callback="+encodeURIComponent(callbackName)+
+    "&_="+Date.now();
+
+  script.onerror=function(){
+    capacityStatus.textContent="";
+    delete window[callbackName];
+    script.remove();
+  };
+
+  document.body.appendChild(script);
+}
+
+const today=new Date();
+today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
+dateInput.min=today.toISOString().slice(0,10);
+
+dateInput.addEventListener("change",updateBookingTimes);
+timeInput.addEventListener("change",checkCapacity);
+
+peopleInput.addEventListener("change",function(){
+  const n=Number(this.value||0);
+  if(n>MAX_PEOPLE_PER_BOOKING){
+    this.value=MAX_PEOPLE_PER_BOOKING;
+  }
+});
+
+updateBookingTimes();
+
+document.getElementById("bookingForm").addEventListener("submit",async function(e){
+  e.preventDefault();
+
+  const value=dateInput.value;
+  const time=timeInput.value;
+  const people=Number(peopleInput.value);
+
+  if(!value){
+    statusBox.textContent="Seleziona il giorno della prenotazione.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  if(!time){
+    statusBox.textContent="Seleziona un orario disponibile.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  if(people<1 || people>MAX_PEOPLE_PER_BOOKING){
+    statusBox.textContent="Per una singola prenotazione puoi indicare da 1 a 100 persone.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  const day=localDateFromInput(value);
+  const weekday=day.getDay();
+
+  if(weekday===5){
+    statusBox.textContent="Il ristorante è chiuso il venerdì.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  if(weekday===3 && !["12:30","13:00","13:30","14:00"].includes(time)){
+    statusBox.textContent="Il mercoledì sera il ristorante è chiuso.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  if(weekday===6 && time==="19:30"){
+    statusBox.textContent="Il sabato alle 19:30 non sono disponibili prenotazioni.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  if(!GOOGLE_SCRIPT_URL.startsWith("https://script.google.com/")){
+    statusBox.textContent="Il modulo non è ancora collegato a Google Sheets.";
+    statusBox.className="status show error";
+    return;
+  }
+
+  submitButton.disabled=true;
+  submitButton.textContent="Invio in corso…";
+  statusBox.className="status";
+
+  const body=new URLSearchParams({
+    action:"create",
+    source:"sito",
+    name:nameInput.value.trim(),
+    phone:phoneInput.value.trim(),
+    date:dateInput.value,
+    time:time,
+    people:String(people),
+    notes:notesInput.value.trim(),
+    website:""
+  });
+
+  try{
+    const response=await fetch(GOOGLE_SCRIPT_URL,{
+      method:"POST",
+      body:body
+    });
+
+    const data=await response.json();
+
+    if(!data.ok){
+      throw new Error(data.error||"Non è stato possibile registrare la prenotazione.");
+    }
+
+    this.reset();
+    updateBookingTimes();
+
+    statusBox.className="status";
+    document.getElementById("bookingResult").hidden=false;
+    document.getElementById("bookingCode").textContent=data.code;
+
+    const shareText=
+      "Ciao! Ho appena richiesto una prenotazione da Terra Nostra.%0A"+
+      "Codice prenotazione: "+encodeURIComponent(data.code);
+
+    document.getElementById("shareCode").href=
+      "https://wa.me/?text="+shareText;
+
+    document.getElementById("copyCode").onclick=async()=>{
+      try{
+        await navigator.clipboard.writeText(data.code);
+        document.getElementById("copyCode").textContent="Copiato ✓";
+        setTimeout(()=>document.getElementById("copyCode").textContent="Copia codice",1800);
+      }catch(err){
+        alert("Codice prenotazione: "+data.code);
+      }
+    };
+
+    document.getElementById("bookingResult").scrollIntoView({behavior:"smooth",block:"center"});
+
+  }catch(err){
+    console.error(err);
+    statusBox.textContent=err.message||"Non è stato possibile inviare la prenotazione.";
+    statusBox.className="status show error";
+  }finally{
+    submitButton.disabled=false;
+    submitButton.textContent="Invia prenotazione →";
+  }
+});
+</script>
+</body>
+</html>
